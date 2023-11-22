@@ -1,10 +1,36 @@
-import React, { ReactElement } from "react"
+import React, { ReactElement, useState, useEffect } from "react"
+import localforage from "localforage";
 
-import { LabeledInput } from "../components"
+import type { Person } from "../types/person"
+import { LabeledInput, Loading } from "../components"
 import { initialPerson } from "../utils"
 
+function savePerson(person: Person | null): void {
+  console.log('Saving:', person);
+  localforage.setItem('person', person);
+}
+
 export function PersonEditor(): ReactElement {
-  const person = initialPerson
+  // const [person, setPerson] = useState(() => initialPerson);
+  const [person, setPerson] = useState< Person | null>(null);
+  // const person = initialPerson
+
+  useEffect(() => {
+    const getPerson = async () => {
+      const person = await localforage.getItem<Person>('person');
+      setPerson(person ?? initialPerson);
+    }
+
+    getPerson();
+  }, []);
+
+  useEffect( () => {
+    savePerson(person)
+  }, [person])
+
+  if (!person){ 
+    return <Loading />;
+  }
 
   return (
     <form
@@ -19,43 +45,60 @@ export function PersonEditor(): ReactElement {
         label="Firstname:"
         value={person.firstname}
         onChange={(e) => {
-          const newPerson = {
-            ...person,
-            firstname: e.target.value,
-          }
-          console.log("Updated person:", newPerson)
+          // const newPerson = {
+          //   ...person,
+          //   firstname: e.target.value,
+          // }
+          // console.log("Updated person:", newPerson)
+          // setPerson(newPerson);
+          /*
+          In the following code line:
+          The ! after ...person is a non-null assertion operator in TypeScript. This is used to tell TypeScript to ignore strict null checks for the person object. It's saying that person should not be null or undefined. This is particularly useful when developers are certain that a particular value won't be null or undefined but TypeScript is unable to infer that.
+           the ! operator in this context is used to assert that person is not null or undefined, potentially overriding TypeScript's strict null checks for this specific use case, allowing the spread operation to work without TypeScript raising null-related errors.
+           TypeScript would flags the spread operation (...person) as potentially problematic because person is of a type that might be undefined. However, if the developer is certain that person won't be undefined at that specific point, they can use the non-null assertion operator ! to indicate this assurance to TypeScript.
+          Note: using ! to bypass TypeScript's strict null checks should be done cautiously and only when developers are absolutely sure that the value won't be null or undefined. Misusing the ! operator can potentially introduce runtime errors if the assumption about the non-nullability of the variable is incorrect.
+          */
+          setPerson(person => ({ ...person!, firstname: e.target.value}))
         }}
       />
       <LabeledInput
         label="Surname:"
         value={person.surname}
         onChange={(e) => {
-          const newPerson = { ...person, surname: e.target.value }
-          console.log("Updated person:", newPerson)
+          // const newPerson = { ...person, surname: e.target.value }
+          // console.log("Updated person:", newPerson)
+          // setPerson(newPerson);
+          setPerson(person => ({...person!, surname: e.target.value }))
         }}
       />
       <LabeledInput
         label="Email:"
         value={person.email}
         onChange={(e) => {
-          const newPerson = { ...person, email: e.target.value }
-          console.log("Updated person:", newPerson)
+          // const newPerson = { ...person, email: e.target.value }
+          // console.log("Updated person:", newPerson)
+          // setPerson(newPerson);
+          setPerson(person => ({...person!, email: e.target.value }))
         }}
       />
       <LabeledInput
         label="Address:"
         value={person.address}
         onChange={(e) => {
-          const newPerson = { ...person, address: e.target.value }
-          console.log("Updated person:", newPerson)
+          // const newPerson = { ...person, address: e.target.value }
+          // console.log("Updated person:", newPerson)
+          // setPerson(newPerson);
+          setPerson(person => ({...person!, address: e.target.value}))
         }}
       />
       <LabeledInput
         label="Phone:"
         value={person.phone}
         onChange={(e) => {
-          const newPerson = { ...person, phone: e.target.value }
-          console.log("Updated person:", newPerson)
+          // const newPerson = { ...person, phone: e.target.value }
+          // console.log("Updated person:", newPerson)
+          // setPerson(newPerson);
+          setPerson(person => ({...person!, phone: e.target.value}))
         }}
       />
       <hr />
