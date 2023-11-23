@@ -1,7 +1,7 @@
-import React, { ReactElement, useState, useEffect } from "react"
+import React, { ReactElement, useRef, useEffect } from "react"
 // import localforage from "localforage";
 
-import type { Person } from "../types/person"
+// import type { Person } from "../types/person"
 import { LabeledInput, Loading } from "../components"
 import { initialPerson } from "../utils"
 import { usePerson } from "./usePerson"
@@ -16,6 +16,16 @@ export function PersonEditor(): ReactElement {
   // const [person, setPerson] = useState< Person | null>(null);
   // const person = initialPerson
   const [person, setPerson] = usePerson(initialPerson)
+
+  const input = useRef<HTMLInputElement>(null);
+
+  useEffect( () => {
+      // Automatically focus the button 1 sec after loading
+      setTimeout(() => {
+        input.current?.focus();
+      }, 1000);
+    }, [])
+
 
   // useEffect(() => {
   //   const getPerson = async () => {
@@ -44,6 +54,10 @@ export function PersonEditor(): ReactElement {
     >
       <h2>Person Editor</h2>
       <LabeledInput
+        ref={input}   // Warning: Function components cannot be given refs. Attempts to 
+                      // access this ref will fail. Did you mean to use React.forwardRef()?
+                      // -> fix this by wrapping LabeledInput component definition 
+                      //    with forwardRef()
         label="Firstname:"
         value={person.firstname}
         onChange={(e) => {
