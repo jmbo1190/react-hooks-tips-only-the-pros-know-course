@@ -54,7 +54,8 @@ export function PersonEditor(): ReactElement {
     >
       <h2>Person Editor</h2>
       <LabeledInput
-        ref={input}   // Warning: Function components cannot be given refs. Attempts to 
+        ref={input}   // This ref is used toswitch focus to this field 1 sec after mounting
+                      // Warning: Function components cannot be given refs. Attempts to 
                       // access this ref will fail. Did you mean to use React.forwardRef()?
                       // -> fix this by wrapping LabeledInput component definition 
                       //    with forwardRef()
@@ -89,6 +90,7 @@ export function PersonEditor(): ReactElement {
       <LabeledInput
         label="Surname:"
         value={person.surname}
+        autoFocus  // this does an immediate focus upon mounting
         onChange={(e) => {
           // const newPerson = { ...person, surname: e.target.value }
           // console.log("Updated person:", newPerson)
