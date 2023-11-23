@@ -1,35 +1,37 @@
 import React, { ReactElement, useState, useEffect } from "react"
-import localforage from "localforage";
+// import localforage from "localforage";
 
 import type { Person } from "../types/person"
 import { LabeledInput, Loading } from "../components"
 import { initialPerson } from "../utils"
+import { usePerson } from "./usePerson"
 
-function savePerson(person: Person | null): void {
-  console.log('Saving:', person);
-  localforage.setItem('person', person);
-}
+// function savePerson(person: Person | null): void {
+//   console.log('Saving:', person);
+//   localforage.setItem('person', person);
+// }
 
 export function PersonEditor(): ReactElement {
   // const [person, setPerson] = useState(() => initialPerson);
-  const [person, setPerson] = useState< Person | null>(null);
+  // const [person, setPerson] = useState< Person | null>(null);
   // const person = initialPerson
+  const [person, setPerson] = usePerson(initialPerson)
 
-  useEffect(() => {
-    const getPerson = async () => {
-      const person = await localforage.getItem<Person>('person');
-      setPerson(person ?? initialPerson);
-    }
+  // useEffect(() => {
+  //   const getPerson = async () => {
+  //     const person = await localforage.getItem<Person>('person');
+  //     setPerson(person ?? initialPerson);
+  //   }
 
-    getPerson();
-  }, []);
+  //   getPerson();
+  // }, []);
 
-  useEffect( () => {
-    savePerson(person)
-  }, [person])
+  // useEffect( () => {
+  //   savePerson(person)
+  // }, [person])
 
-  if (!person){ 
-    return <Loading />;
+  if (!person) {
+    return <Loading />
   }
 
   return (
@@ -58,7 +60,16 @@ export function PersonEditor(): ReactElement {
            TypeScript would flags the spread operation (...person) as potentially problematic because person is of a type that might be undefined. However, if the developer is certain that person won't be undefined at that specific point, they can use the non-null assertion operator ! to indicate this assurance to TypeScript.
           Note: using ! to bypass TypeScript's strict null checks should be done cautiously and only when developers are absolutely sure that the value won't be null or undefined. Misusing the ! operator can potentially introduce runtime errors if the assumption about the non-nullability of the variable is incorrect.
           */
-          setPerson(person => ({ ...person!, firstname: e.target.value}))
+          setPerson((person) => ({ ...person!, firstname: e.target.value }))
+          if (e.target.value === "Ford") {
+            setPerson((person) => ({
+              ...person!,
+              surname: "Prefect",
+              address: "Outer space",
+              email: "",
+              phone: "",
+            }))
+          }
         }}
       />
       <LabeledInput
@@ -68,7 +79,7 @@ export function PersonEditor(): ReactElement {
           // const newPerson = { ...person, surname: e.target.value }
           // console.log("Updated person:", newPerson)
           // setPerson(newPerson);
-          setPerson(person => ({...person!, surname: e.target.value }))
+          setPerson((person) => ({ ...person!, surname: e.target.value }))
         }}
       />
       <LabeledInput
@@ -78,7 +89,7 @@ export function PersonEditor(): ReactElement {
           // const newPerson = { ...person, email: e.target.value }
           // console.log("Updated person:", newPerson)
           // setPerson(newPerson);
-          setPerson(person => ({...person!, email: e.target.value }))
+          setPerson((person) => ({ ...person!, email: e.target.value }))
         }}
       />
       <LabeledInput
@@ -88,7 +99,7 @@ export function PersonEditor(): ReactElement {
           // const newPerson = { ...person, address: e.target.value }
           // console.log("Updated person:", newPerson)
           // setPerson(newPerson);
-          setPerson(person => ({...person!, address: e.target.value}))
+          setPerson((person) => ({ ...person!, address: e.target.value }))
         }}
       />
       <LabeledInput
@@ -98,7 +109,7 @@ export function PersonEditor(): ReactElement {
           // const newPerson = { ...person, phone: e.target.value }
           // console.log("Updated person:", newPerson)
           // setPerson(newPerson);
-          setPerson(person => ({...person!, phone: e.target.value}))
+          setPerson((person) => ({ ...person!, phone: e.target.value }))
         }}
       />
       <hr />
