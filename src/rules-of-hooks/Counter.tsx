@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useRef, useEffect } from "react"
+import React, { ReactElement, useState, useRef, useEffect, useLayoutEffect } from "react"
 
 export function Counter(): ReactElement {
   const [counter, setCounter] = useState(0)
@@ -11,6 +11,18 @@ export function Counter(): ReactElement {
       button.current?.focus();
     }, 1000);
   }, [])
+
+  // useEffect fires asynchronously - i.e. after some delay
+  // Note the default backgroundColor is blue
+  useEffect( () => {
+    if (button.current) button.current.style.backgroundColor = "green";
+  }, []);
+
+  // useLayoutEffect fires synchronously - immediately when compounent is rendered but before it becomes visible
+  // Note the default backgroundColor is blue
+  useLayoutEffect( () => {
+    if (button.current) button.current.style.backgroundColor = "red";
+  }, []);
 
   return (
     <div>
