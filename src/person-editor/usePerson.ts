@@ -2,6 +2,9 @@ import React, { ReactElement, useState, useEffect } from "react"
 import localforage from "localforage";
 
 import type { Person } from "../types/person"
+import { sleep } from "../utils"
+import { useIsMounted } from "../hooks/useIsMounted";
+
 
 function savePerson(person: Person | null): void {
     console.log('Saving:', person);
@@ -17,15 +20,20 @@ export const usePerson = (initialPerson: Person) => {
         // need to initialize person to null as we are loading the data asynchronously
         // therefore need to tell typescript it can be either null or a Person
         // otherwise it will assume the value is always null
+
+    const isMounted = useIsMounted();
         
     useEffect(() => {
         const getPerson = async () => {
-        const person = await localforage.getItem<Person>('person');
-        setPerson(person ?? initialPerson);
+            const person = await localforage.getItem<Person>('person');
+            // await sleep(2500);  // make loading artificially slower
+            if (isMounted.current) {
+                setPerson(person ?? initialPerson);
+            }
         }
 
         getPerson();
-    }, [initialPerson]);
+    }, [initialPerson, isMounted]);
 
     useEffect( () => {
         savePerson(person)
