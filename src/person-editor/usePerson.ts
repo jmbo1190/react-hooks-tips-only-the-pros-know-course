@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from "react"
+import React, { ReactElement, useState, useEffect, useCallback } from "react"
 import localforage from "localforage";
 
 import type { Person } from "../types/person"
@@ -36,13 +36,32 @@ export const usePerson = (initialPerson: Person) => {
         getPerson();
     }, [initialPerson, isMounted]);
 
+    // Trigger a component re-render at every specified interval 
+    // by changing some (actually unused) state
+    // If interval is 500 i.e. shorter than useDebounce interval, saving never occurs
+    // If interval is 1500 i.e. larger than useDebounce interval, saving occurs at each re-render
+    // because savePerson() has been redefined.  
+    // Both unwanted behaviours can be prevented
+    // by making a stable saveFn() that is only redefined when person changes.
+    const [_now, setNow] = useState(new Date());
+    useEffect(() => {
+        const handle = setInterval(() => {
+            setNow(new Date());
+         }, 
+         500
+         )
+     }, [])
+
     // useEffect( () => {
     //     savePerson(person)
     // }, [person])
 
-    useDebounce( () => {
-        savePerson(person)
-    }, 1000)
+
+    // Note: useDebounce takes a callback function as 1st argument
+    //       i.e. the function must not be called yet
+    useDebounce( 
+        () => { savePerson(person) }
+        , 1000)
 
 
     // use 'as const' to make typescript aware that we return an array
