@@ -4,6 +4,7 @@ import localforage from "localforage";
 import type { Person } from "../types/person"
 import { sleep } from "../utils"
 import { useIsMounted } from "../hooks/useIsMounted";
+import { useDebounce } from "../hooks/useDebounce";
 
 
 function savePerson(person: Person | null): void {
@@ -35,9 +36,13 @@ export const usePerson = (initialPerson: Person) => {
         getPerson();
     }, [initialPerson, isMounted]);
 
-    useEffect( () => {
+    // useEffect( () => {
+    //     savePerson(person)
+    // }, [person])
+
+    useDebounce( () => {
         savePerson(person)
-    }, [person])
+    }, 1000)
 
 
     // use 'as const' to make typescript aware that we return an array
