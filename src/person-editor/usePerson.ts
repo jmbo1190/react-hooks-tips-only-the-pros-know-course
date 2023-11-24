@@ -5,6 +5,7 @@ import type { Person } from "../types/person"
 import { sleep } from "../utils"
 import { useIsMounted } from "../hooks/useIsMounted";
 import { useDebounce } from "../hooks/useDebounce";
+import { useWillUnmount } from "../hooks/useWillUnmount";
 
 
 function savePerson(person: Person | null): void {
@@ -69,6 +70,11 @@ export const usePerson = (initialPerson: Person) => {
         , 1000)
 
 
+    // Ensure person is saved if component unmounts before useDebounce()
+    // triggers the save
+    useWillUnmount(
+        saveFn
+    )
     // use 'as const' to make typescript aware that we return an array
     // with exactly 2 elements, one Person and one function,
     // rather than an array with potentially multiple Persons and functions
