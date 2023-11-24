@@ -56,11 +56,16 @@ export const usePerson = (initialPerson: Person) => {
     //     savePerson(person)
     // }, [person])
 
+    const saveFn = useCallback(() => {
+        savePerson(person)
+    }, [person] );
+
 
     // Note: useDebounce takes a callback function as 1st argument
     //       i.e. the function must not be called yet
     useDebounce( 
-        () => { savePerson(person) }
+        // () => { savePerson(person) }
+        saveFn
         , 1000)
 
 
