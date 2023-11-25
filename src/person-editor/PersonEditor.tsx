@@ -1,4 +1,4 @@
-import React, { ReactElement, useRef, useEffect } from "react"
+import React, { ReactElement, useRef, useEffect, useDebugValue } from "react"
 // import localforage from "localforage";
 
 // import type { Person } from "../types/person"
@@ -26,6 +26,7 @@ export function PersonEditor(): ReactElement {
       }, 1000);
     }, [])
 
+    useDebugValue(person, (p) => `${p?.firstname} ${p?.surname}`)
 
   // useEffect(() => {
   //   const getPerson = async () => {
