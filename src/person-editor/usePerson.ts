@@ -2,10 +2,11 @@ import React, { ReactElement, useState, useEffect, useCallback } from "react"
 import localforage from "localforage";
 
 import type { Person } from "../types/person"
-import { sleep } from "../utils"
+// import { sleep } from "../utils"
 import { useIsMounted } from "../hooks/useIsMounted";
 import { useDebounce } from "../hooks/useDebounce";
 import { useWillUnmount } from "../hooks/useWillUnmount";
+import { useThrottle } from "../hooks/useThrottle";
 
 
 function savePerson(person: Person | null): void {
@@ -64,11 +65,15 @@ export const usePerson = (initialPerson: Person) => {
 
     // Note: useDebounce takes a callback function as 1st argument
     //       i.e. the function must not be called yet
-    useDebounce( 
-        // () => { savePerson(person) }
+    // useDebounce( 
+    //     // () => { savePerson(person) }
+    //     saveFn
+    //     , 1000)
+
+    useThrottle( 
         saveFn
         , 1000)
-
+    
 
     // Ensure person is saved if component unmounts before useDebounce()
     // triggers the save
