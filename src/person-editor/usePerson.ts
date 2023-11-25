@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect, useCallback } from "react"
+import React, { ReactElement, useState, useEffect, useCallback, SetStateAction } from "react"
 import localforage from "localforage";
 
 import type { Person } from "../types/person"
@@ -8,6 +8,10 @@ import { useDebounce } from "../hooks/useDebounce";
 import { useWillUnmount } from "../hooks/useWillUnmount";
 import { useThrottle } from "../hooks/useThrottle";
 
+interface Metadata {
+    isDirty: boolean  // a change has been made to the person
+    isValid: boolean  // person has been validated
+}
 
 function savePerson(person: Person | null): void {
     console.log('Saving:', person);
@@ -23,6 +27,11 @@ export const usePerson = (initialPerson: Person) => {
         // need to initialize person to null as we are loading the data asynchronously
         // therefore need to tell typescript it can be either null or a Person
         // otherwise it will assume the value is always null
+
+    const [metadata, setMetadata] = useState<Metadata>({
+        isDirty: false,
+        isValid: true
+    })
 
     const isMounted = useIsMounted();
         
@@ -80,8 +89,16 @@ export const usePerson = (initialPerson: Person) => {
     useWillUnmount(
         saveFn
     )
-    // use 'as const' to make typescript aware that we return an array
-    // with exactly 2 elements, one Person and one function,
-    // rather than an array with potentially multiple Persons and functions
-    return [person, setPerson] as const;
+    // // use 'as const' to make typescript aware that we return an array
+    // // with exactly 2 elements, one Person and one function,
+    // // rather than an array with potentially multiple Persons and functions
+    // return [person, setPerson] as const;
+
+    function setPersonAndMeta(value: SetStateAction<Person | null>) {
+        setPerson(value)
+        setMetadata((m) => ({ ...m, isDirty: true }))
+        // TODO: Validate
+      }
+    
+      return [person, setPersonAndMeta, metadata] as const
 }

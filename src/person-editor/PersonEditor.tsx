@@ -15,7 +15,8 @@ export function PersonEditor(): ReactElement {
   // const [person, setPerson] = useState(() => initialPerson);
   // const [person, setPerson] = useState< Person | null>(null);
   // const person = initialPerson
-  const [person, setPerson] = usePerson(initialPerson)
+  // const [person, setPerson] = usePerson(initialPerson)
+  const [person, setPerson, {isDirty, isValid}] = usePerson(initialPerson)
 
   const input = useRef<HTMLInputElement>(null);
 
@@ -131,7 +132,12 @@ export function PersonEditor(): ReactElement {
       />
       <hr />
       <div className="btn-group">
-        <button type="submit" className="btn btn-primary">
+        <button 
+          type="submit" 
+          className="btn btn-primary" 
+          disabled={!isDirty || ! isValid}  // Enable only if person fields have changed 
+                                            // and have been validated
+          >
           Submit
         </button>
       </div>
